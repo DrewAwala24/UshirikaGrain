@@ -86,20 +86,10 @@ public class AuthService {
         );
 
         Set<Role> roles = new HashSet<>();
-        if (registerRequest.role() != null && !registerRequest.role().isBlank()) {
-            try {
-                RoleType roleType = RoleType.valueOf(registerRequest.role());
-                Role requestedRole = roleRepository.findByName(roleType)
-                        .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + registerRequest.role()));
-                roles.add(requestedRole);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid role specified: " + registerRequest.role());
-            }
-        } else {
-            Role defaultRole = roleRepository.findByName(RoleType.ROLE_FARMER)
-                    .orElseThrow(() -> new ResourceNotFoundException("Default role ROLE_FARMER not configured in database"));
-            roles.add(defaultRole);
-        }
+        // Public registration assigns ROLE_FARMER; privileged roles (ADMIN, DEPOT_MANAGER) require administrative assignment
+        Role defaultRole = roleRepository.findByName(RoleType.ROLE_FARMER)
+                .orElseThrow(() -> new ResourceNotFoundException("Default role ROLE_FARMER not configured in database"));
+        roles.add(defaultRole);
 
         user.setRoles(roles);
         User savedUser = userRepository.save(user);

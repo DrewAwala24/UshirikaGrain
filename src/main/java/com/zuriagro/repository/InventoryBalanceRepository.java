@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,4 +31,13 @@ public interface InventoryBalanceRepository extends JpaRepository<InventoryBalan
     List<InventoryBalance> findByDepotId(Long depotId);
 
     List<InventoryBalance> findByGrainTypeId(Long grainTypeId);
+
+    @Query("SELECT SUM(ib.quantity) FROM InventoryBalance ib")
+    Optional<BigDecimal> sumAllQuantities();
+
+    @Query("SELECT SUM(ib.quantity) FROM InventoryBalance ib WHERE ib.depot.id = :depotId")
+    Optional<BigDecimal> sumQuantitiesByDepotId(@Param("depotId") Long depotId);
+
+    @Query("SELECT SUM(ib.quantity) FROM InventoryBalance ib WHERE ib.grainType.id = :grainTypeId")
+    Optional<BigDecimal> sumQuantitiesByGrainTypeId(@Param("grainTypeId") Long grainTypeId);
 }

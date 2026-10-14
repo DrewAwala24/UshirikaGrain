@@ -12,6 +12,10 @@ public record GrainDepositResponse(
         Long farmerId,
         String farmerUsername,
         String farmerFullName,
+        String farmerName,
+        String farmerPhone,
+        Long farmerRecordId,
+        String farmerCode,
         Long depotId,
         String depotCode,
         String depotName,
@@ -20,6 +24,7 @@ public record GrainDepositResponse(
         String grainTypeName,
         BigDecimal quantity,
         String unitOfMeasure,
+        BigDecimal moisturePercentage,
         DepositStatus status,
         String rejectionReason,
         String notes,
@@ -31,12 +36,19 @@ public record GrainDepositResponse(
         Instant updatedAt
 ) {
     public static GrainDepositResponse fromEntity(GrainDeposit deposit) {
+        Long farmerRecId = deposit.getFarmerRecord() != null ? deposit.getFarmerRecord().getId() : null;
+        String fCode = deposit.getFarmerRecord() != null ? deposit.getFarmerRecord().getFarmerCode() : null;
+
         return new GrainDepositResponse(
                 deposit.getId(),
                 deposit.getDepositReference(),
                 deposit.getFarmer().getId(),
                 deposit.getFarmer().getUsername(),
                 deposit.getFarmer().getFullName(),
+                deposit.getFarmerName(),
+                deposit.getFarmerPhone(),
+                farmerRecId,
+                fCode,
                 deposit.getDepot().getId(),
                 deposit.getDepot().getCode(),
                 deposit.getDepot().getName(),
@@ -45,6 +57,7 @@ public record GrainDepositResponse(
                 deposit.getGrainType().getName(),
                 deposit.getQuantity(),
                 deposit.getUnitOfMeasure(),
+                deposit.getMoisturePercentage(),
                 deposit.getStatus(),
                 deposit.getRejectionReason(),
                 deposit.getNotes(),

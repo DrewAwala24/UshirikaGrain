@@ -52,6 +52,9 @@ class GrainDepositServiceTest {
     @Mock
     private AuditLogService auditLogService;
 
+    @Mock
+    private com.zuriagro.repository.FarmerRepository farmerRepository;
+
     @InjectMocks
     private GrainDepositService grainDepositService;
 

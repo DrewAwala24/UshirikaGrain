@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Farmer Records & Profiles · Ushirika Grain</title>
+<meta name="description" content="Manage registered farmers, agricultural profiles, and cumulative produce records.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-in">
+    <a class="brand" href="index.html" aria-label="Ushirika Grain home"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="nav-sep" aria-hidden="true"></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="intake.html">Intake</a></li>
+          <li><a href="deposits.html">Deposits</a></li>
+          <li><a href="farmers.html" aria-current="page">Farmers</a></li>
+          <li><a href="admin.html">Admin</a></li>
+      </ul>
+      <div class="auth-slot" id="auth-slot"><a class="btn btn-primary btn-sm" href="login.html">Log in</a></div>
+    </nav>
+  </div>
+</header>
+<main id="main" data-page="farmers" data-protected class="container app-main">
+  <div class="app-head">
+    <div>
+      <span class="eyebrow" style="color:var(--gold,#C48F29)">Cooperative Registry</span>
+      <h1>Farmer Management</h1>
+      <p>Register agricultural producers, view cumulative deliveries, and manage account statuses.</p>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <button class="btn btn-primary" id="btn-open-register" type="button">+ Register Farmer</button>
+    </div>
+  </div>
+
+  <div id="farmers-access-denied" class="notice s-crit" style="display:none;margin-bottom:24px">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+    <span><strong>Access Restricted:</strong> Farmer directory is accessible to extension officers, depot managers, and administrators.</span>
+  </div>
+
+  <div id="farmers-content">
+    <!-- Search & Filter bar -->
+    <div class="filters-card form-card" style="margin-bottom:20px;padding:16px 20px">
+      <div class="form-row" style="align-items:flex-end">
+        <div class="field" style="flex:2">
+          <label for="farmer-search">Search Directory</label>
+          <div class="inp has-prefix">
+            <span class="prefix"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg></span>
+            <input class="control" id="farmer-search" placeholder="Search by name, farmer code (e.g. FRM-2026-0001), phone, or ID…">
+          </div>
+        </div>
+        <div class="field" style="flex:1">
+          <label for="farmer-status-filter">Status</label>
+          <div class="select">
+            <select class="control" id="farmer-status-filter">
+              <option value="">All Statuses</option>
+              <option value="ACTIVE" selected>Active Only</option>
+              <option value="INACTIVE">Inactive Only</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Farmer Directory Table -->
+    <div class="form-card" style="padding:0;overflow:hidden">
+      <div class="row-between" style="padding:16px 20px;border-bottom:1px solid var(--border,#E4EBE6)">
+        <h2 style="font-size:18px;margin:0">Registered Producers</h2>
+        <span class="pill s-ok mono" id="farmers-count">Loading…</span>
+      </div>
+      <div class="scroll">
+        <table id="farmers-table">
+          <thead>
+            <tr>
+              <th>Farmer Code</th>
+              <th>Full Name</th>
+              <th>National ID</th>
+              <th>Phone Number</th>
+              <th>Location</th>
+              <th class="r">Deposits</th>
+              <th class="r">Total (KG)</th>
+              <th>Status</th>
+              <th style="text-align:center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="farmers-tbody">
+            <tr><td colspan="9" class="empty" style="padding:32px;text-align:center">Loading farmer directory…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Registration Modal / Form Section (collapsible / toggleable) -->
+    <div id="farmer-modal" class="form-card" style="display:none;margin-top:28px">
+      <div class="row-between" style="margin-bottom:16px;border-bottom:1px solid var(--border,#E4EBE6);padding-bottom:12px">
+        <h2 id="farmer-form-title">Register New Agricultural Producer</h2>
+        <button class="btn btn-outline btn-sm" id="btn-close-form" type="button">Cancel</button>
+      </div>
+
+      <div id="farmer-form-err" class="notice s-crit" style="display:none;margin-bottom:16px"></div>
+
+      <form id="farmer-reg-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label for="fm-name">Full Legal Name<span class="req" aria-hidden="true">*</span></label>
+            <input class="control" id="fm-name" required placeholder="e.g. John Kamau">
+          </div>
+          <div class="field">
+            <label for="fm-natid">National ID Number</label>
+            <input class="control mono" id="fm-natid" placeholder="e.g. 12345678">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="fm-phone">Phone Number<span class="req" aria-hidden="true">*</span></label>
+            <input class="control" id="fm-phone" type="tel" required placeholder="0711 000 003">
+          </div>
+          <div class="field">
+            <label for="fm-email">Email Address</label>
+            <input class="control" id="fm-email" type="email" placeholder="john@example.com">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="fm-county">County</label>
+            <input class="control" id="fm-county" value="Trans Nzoia" placeholder="Trans Nzoia">
+          </div>
+          <div class="field">
+            <label for="fm-subcounty">Sub-County</label>
+            <input class="control" id="fm-subcounty" placeholder="e.g. Kiminini, Kitale, Endebess">
+          </div>
+          <div class="field">
+            <label for="fm-ward">Ward</label>
+            <input class="control" id="fm-ward" placeholder="e.g. Sikhendu, Matumbei">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="fm-loc">Specific Scheme / Plot / Address</label>
+          <input class="control" id="fm-loc" placeholder="e.g. Plot 44, Sikhendu Scheme">
+        </div>
+
+        <div class="form-foot">
+          <span class="fine">A unique farmer identifier code will be issued automatically.</span>
+          <button class="btn btn-primary" id="fm-submit-btn" type="submit">Save Farmer Record</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Farmer Profile & Deposit History Details Drawer / Card -->
+    <div id="farmer-profile-card" class="form-card" style="display:none;margin-top:28px">
+      <div class="row-between" style="margin-bottom:16px;border-bottom:1px solid var(--border,#E4EBE6);padding-bottom:12px">
+        <div>
+          <span class="pill s-ok mono" id="prof-code" style="margin-bottom:6px;display:inline-block">FRM-</span>
+          <h2 id="prof-name" style="margin:0">Farmer Profile</h2>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" id="prof-toggle-status" type="button">Change Status</button>
+          <button class="btn btn-outline btn-sm" id="prof-close" type="button">Close Profile</button>
+        </div>
+      </div>
+
+      <div class="grid-form" style="margin-bottom:20px">
+        <div class="stack" style="gap:10px">
+          <div><span class="muted" style="font-size:13px">Phone Number</span><div class="mono" id="prof-phone">-</div></div>
+          <div><span class="muted" style="font-size:13px">National ID</span><div class="mono" id="prof-natid">-</div></div>
+          <div><span class="muted" style="font-size:13px">Email</span><div id="prof-email">-</div></div>
+        </div>
+        <div class="stack" style="gap:10px">
+          <div><span class="muted" style="font-size:13px">Location</span><div id="prof-location">-</div></div>
+          <div><span class="muted" style="font-size:13px">Registered By</span><div id="prof-regby">-</div></div>
+          <div><span class="muted" style="font-size:13px">Registration Date</span><div class="mono" id="prof-date">-</div></div>
+        </div>
+        <div class="stack" style="gap:10px">
+          <div><span class="muted" style="font-size:13px">Cumulative Accepted Weight</span><div class="mono" style="font-size:20px;font-weight:700" id="prof-total-kg">0 kg</div></div>
+          <div><span class="muted" style="font-size:13px">Total Grain Deposits</span><div class="mono" style="font-size:18px" id="prof-total-deps">0 deposits</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:16px;margin-bottom:12px">Deposit History for this Producer</h3>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Tracking ID</th>
+              <th>Depot</th>
+              <th>Produce</th>
+              <th class="r">Quantity</th>
+              <th class="r">Moisture</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="prof-deposits-tbody">
+            <tr><td colspan="7" class="empty" style="padding:16px;text-align:center">No deposits recorded for this farmer.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+        <p>Grain collection, storage tracking and transparent payouts for farming cooperatives in Trans Nzoia.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Log in</a></li>
+          <li><a href="farmers.html">Farmers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          <li><a href="mailto:hello@zuriagro.example">hello@ushirikagrain.com</a></li>
+          <li><a href="tel:+254700000000">+254 700 000 000</a></li>
+          <li>Kitale, Trans Nzoia County, Kenya</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>&copy; <span id="year">2026</span> Ushirika Grain. All rights reserved.</span><span>Smart agriculture for a more resilient future.</span></div>
+  </div>
+</footer>
+<script src="api.js" defer></script>
+<script src="data.js" defer></script>
+<script src="shell.js" defer></script>
+<script src="farmers.js" defer></script>
+</body>
+</html>

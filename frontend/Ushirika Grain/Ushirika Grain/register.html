@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Register for Ushirika Grain</title>
+<meta name="description" content="Create an account to track your grain deliveries and receipts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-in">
+    <a class="brand" href="index.html" aria-label="Ushirika Grain home"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="nav-sep" aria-hidden="true"></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="intake.html">Intake</a></li>
+          <li><a href="deposits.html">Deposits</a></li>
+      </ul>
+      <div class="auth-slot" id="auth-slot"><a class="btn btn-primary btn-sm" href="login.html">Log in</a></div>
+    </nav>
+  </div>
+</header>
+<main id="main" data-page="register" class="auth">
+  <aside class="auth-art">
+    <span class="eyebrow" style="color:var(--gold)">Farmer & Depositor Portal</span>
+    <h2>Join your local <em>grain cooperative</em></h2>
+    <ul class="auth-list">
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 12h6M9 16h4"/></svg><span><b>Instant delivery tracking</b>Check receipt moisture grades and payout approvals in real time.</span></li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/><circle cx="12" cy="16" r="1.2"/></svg><span><b>Certified storage network</b>Transparent grain weights and safe silo storage across Trans Nzoia.</span></li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span><b>Tamper-evident audit trail</b>Every batch is cryptographically linked to your registered profile.</span></li>
+    </ul>
+  </aside>
+  <div class="auth-panel">
+    <div class="auth-card">
+      <div class="stack" style="gap:8px">
+        <h1>Create an account</h1>
+        <p class="muted">Register as a depositor to track deliveries and access receipts.</p>
+      </div>
+
+      <div id="reg-global-err" class="notice s-crit" style="display:none;margin-bottom:16px"></div>
+      <div id="reg-success" class="notice s-ok" style="display:none;margin-bottom:16px"></div>
+
+      <form id="register-form" novalidate>
+        <div class="field" data-field="fullName">
+          <label for="r-name">Full name<span class="req" aria-hidden="true">*</span></label>
+          <div class="inp"><input class="control" id="r-name" type="text" autocomplete="name" placeholder="e.g. John Kamau" required></div>
+          <span class="field-err" role="alert"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="field" data-field="username">
+            <label for="r-username">Username<span class="req" aria-hidden="true">*</span></label>
+            <div class="inp"><input class="control" id="r-username" type="text" autocomplete="username" placeholder="e.g. john_kamau" required></div>
+            <span class="field-err" role="alert"></span>
+          </div>
+          <div class="field" data-field="phone">
+            <label for="r-phone">Phone number<span class="req" aria-hidden="true">*</span></label>
+            <div class="inp"><input class="control" id="r-phone" type="tel" autocomplete="tel" placeholder="0711 000 003" required></div>
+            <span class="field-err" role="alert"></span>
+          </div>
+        </div>
+
+        <div class="field" data-field="email">
+          <label for="r-email">Email address<span class="req" aria-hidden="true">*</span></label>
+          <div class="inp has-prefix"><span class="prefix"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><input class="control" id="r-email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
+          <span class="field-err" role="alert"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="field" data-field="pass">
+            <label for="r-pass">Password<span class="req" aria-hidden="true">*</span></label>
+            <div class="inp"><input class="control" id="r-pass" type="password" autocomplete="new-password" placeholder="At least 6 characters" required></div>
+            <span class="field-err" role="alert"></span>
+          </div>
+          <div class="field" data-field="passConfirm">
+            <label for="r-pass-confirm">Confirm password<span class="req" aria-hidden="true">*</span></label>
+            <div class="inp"><input class="control" id="r-pass-confirm" type="password" autocomplete="new-password" placeholder="Repeat password" required></div>
+            <span class="field-err" role="alert"></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="check"><input type="checkbox" id="r-agree" checked required><span>I agree to cooperative grain inspection and storage terms</span></label>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="reg-btn" type="submit">Create account</button>
+      </form>
+
+      <p class="muted" style="font-size:14.5px;margin-top:16px">Already have an account? <a href="login.html">Log in here</a>.</p>
+    </div>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+        <p>Grain collection, storage tracking and transparent payouts for farming cooperatives in Trans Nzoia.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Log in</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          <li><a href="mailto:hello@zuriagro.example">hello@ushirikagrain.com</a></li>
+          <li><a href="tel:+254700000000">+254 700 000 000</a></li>
+          <li>Kitale, Trans Nzoia County, Kenya</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>&copy; <span id="year">2026</span> Ushirika Grain. All rights reserved.</span><span>Smart agriculture for a more resilient future.</span></div>
+  </div>
+</footer>
+<script src="api.js" defer></script>
+<script src="data.js" defer></script>
+<script src="shell.js" defer></script>
+<script src="register.js" defer></script>
+</body>
+</html>

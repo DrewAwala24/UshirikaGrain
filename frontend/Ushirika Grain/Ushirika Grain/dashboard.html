@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard</title>
+<meta name="description" content="Depot capacity, forecasts, alerts and spoilage risk.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-in">
+    <a class="brand" href="index.html" aria-label="Ushirika Grain home"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="nav-sep" aria-hidden="true"></li>
+          <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
+          <li><a href="intake.html">Intake</a></li>
+          <li><a href="deposits.html">Deposits</a></li>
+      </ul>
+      <div class="auth-slot" id="auth-slot"><a class="btn btn-primary btn-sm" href="login.html">Log in</a></div>
+    </nav>
+  </div>
+</header>
+<main id="main" data-page="dashboard" data-protected class="container app-main">
+  <div class="app-head">
+    <div>
+      <h1 id="greet">Dashboard</h1>
+      <p id="today-line"></p>
+    </div>
+    <div class="actions">
+      <a class="btn btn-primary" href="intake.html">New intake</a>
+      <a class="btn btn-outline" href="deposits.html">View deposits</a>
+    </div>
+  </div>
+  <div class="stack">
+    <div class="kpi-grid" id="kpis"></div>
+    <div class="grid-app">
+      <div class="panel">
+        <div class="panel-h"><h2>Depot capacity</h2><p>Select a depot to see its forecast</p></div>
+        <div id="depots"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><h2 id="chart-title">Stock forecast</h2><p>Bags in store</p></div>
+        <div class="chart" id="chart"></div>
+        <div class="legend"><span><b></b>Stock, last 14 days</span><span><b class="p"></b>Projected</span><span><b class="c"></b><span id="cap-legend">Capacity</span></span></div>
+        <p class="note-line" id="chart-note"></p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-h"><h2>Alerts</h2><p>From capacity forecasts and spoilage risk</p></div>
+      <div id="alerts"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-h"><h2>Batches to act on first</h2><p>Highest spoilage risk in store</p></div>
+      <div class="scroll" id="risk-table"></div>
+    </div>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+        <p>Grain collection, storage tracking and transparent payouts for farming cooperatives in Trans Nzoia.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Log in</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          <li><a href="mailto:hello@zuriagro.example">hello@ushirikagrain.com</a></li>
+          <li><a href="tel:+254700000000">+254 700 000 000</a></li>
+          <li>Kitale, Trans Nzoia County, Kenya</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>&copy; <span id="year">2026</span> Ushirika Grain. All rights reserved.</span><span>Smart agriculture for a more resilient future.</span></div>
+  </div>
+</footer>
+<script src="api.js" defer></script>
+<script src="data.js" defer></script>
+<script src="shell.js" defer></script>
+<script src="dashboard.js" defer></script>
+</body>
+</html>

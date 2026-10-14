@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>New intake</title>
+  <meta name="description" content="Record a grain delivery at the depot gate.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+
+
+    <div class="container header-in">
+      <a class="brand" href="index.html" aria-label="Ushirika Grain home"><span class="brand-mark"><svg
+            viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor" />
+            <path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6" />
+          </svg></span>Ushirika Grain</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"
+        aria-controls="nav"><span></span></button>
+      <nav class="nav" id="nav" aria-label="Main">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="nav-sep" aria-hidden="true"></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="intake.html" aria-current="page">Intake</a></li>
+          <li><a href="deposits.html">Deposits</a></li>
+        </ul>
+        <div class="auth-slot" id="auth-slot"><a class="btn btn-primary btn-sm" href="login.html">Log in</a></div>
+      </nav>
+    </div>
+  </header>
+  <main id="main" data-page="intake" data-protected class="container app-main">
+    <div class="app-head">
+      <div>
+        <h1>New intake</h1>
+        <p>Record a delivery at the depot gate. You get a tracking ID when you save, and the farmer can use it to look
+          up the deposit.</p>
+      </div>
+    </div>
+
+    <div id="intake-form-wrap" class="grid-form">
+      <form id="intake-form" class="form-card" novalidate>
+        <div class="form-section" role="group" aria-labelledby="g1">
+          <h2 class="form-title" id="g1"><span class="n">1</span>Farmer <small>Who is delivering</small></h2>
+          <div class="field" data-field="name">
+            <label for="f-name">Full name<span class="req" aria-hidden="true">*</span></label>
+            <input class="control" id="f-name" autocomplete="off" placeholder="e.g. Jepkorir Cheruiyot">
+            <span class="field-err" role="alert"></span>
+          </div>
+          <div class="form-row">
+            <div class="field" data-field="phone">
+              <label for="f-phone">Phone number<span class="req" aria-hidden="true">*</span></label>
+              <input class="control" id="f-phone" type="tel" inputmode="tel" autocomplete="off"
+                placeholder="0712 345 678">
+              <span class="field-err" role="alert"></span>
+              <span class="hint">Only the last 3 digits appear on receipts.</span>
+            </div>
+            <div class="field" data-field="sub">
+              <label for="f-sub">Sub-county<span class="req" aria-hidden="true">*</span></label>
+              <div class="select"><select class="control" id="f-sub"></select></div>
+              <span class="field-err" role="alert"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" role="group" aria-labelledby="g2">
+          <h2 class="form-title" id="g2"><span class="n">2</span>Delivery <small>What arrived at the gate</small></h2>
+          <div class="field">
+            <span class="lbl" id="l-prod">Produce</span>
+            <div class="seg" role="radiogroup" aria-labelledby="l-prod">
+              <div><input type="radio" name="produce" id="p-maize" value="Maize" checked><label
+                  for="p-maize">Maize</label></div>
+              <div><input type="radio" name="produce" id="p-wheat" value="Wheat"><label for="p-wheat">Wheat</label>
+              </div>
+              <div><input type="radio" name="produce" id="p-beans" value="Beans"><label for="p-beans">Beans</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field" data-field="bags">
+              <label for="f-bags">Number of bags<span class="req" aria-hidden="true">*</span></label>
+              <div class="inp"><input class="control" id="f-bags" type="number" inputmode="numeric" min="1" max="2000"
+                  step="1" value="45"><span class="suffix">bags</span></div>
+              <span class="field-err" role="alert"></span>
+              <span class="hint mono" id="bags-kg"></span>
+            </div>
+            <div class="field" data-field="moist">
+              <label for="f-moist">Moisture reading<span class="req" aria-hidden="true">*</span></label>
+              <div class="inp"><input class="control" id="f-moist" type="number" inputmode="decimal" min="5" max="30"
+                  step="0.1" value="14.8"><span class="suffix">%</span></div>
+              <span class="field-err" role="alert"></span>
+              <span class="hint">Safe storage limit is 13.5%.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" role="group" aria-labelledby="g3">
+          <h2 class="form-title" id="g3"><span class="n">3</span>Receiving depot <small>Where the grain goes</small>
+          </h2>
+          <div class="opts" id="depot-opts"></div>
+          <div class="alert-box" id="form-error" role="alert"></div>
+        </div>
+
+        <div class="form-foot">
+          <span class="fine">The deposit is signed and linked to the previous record when you save.</span>
+          <div class="actions">
+            <button class="btn btn-outline" type="button" data-act="clear">Clear form</button>
+            <button class="btn btn-primary" type="submit">Record deposit</button>
+          </div>
+        </div>
+      </form>
+
+      <aside class="panel sticky">
+        <div class="panel-h">
+          <h2>AI check</h2>
+          <p>Updates as you type</p>
+        </div>
+        <div class="panel-b" id="check"></div>
+      </aside>
+    </div>
+
+    <div id="intake-success" class="form-card" hidden>
+      <div class="success">
+        <div class="success-ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg></div>
+        <div class="stack" style="gap:10px">
+          <h2>Deposit recorded</h2>
+          <p class="lead">Give the farmer this tracking ID. It is now part of the signed ledger.</p>
+        </div>
+        <div id="success-ticket" style="width:100%;max-width:560px"></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn btn-primary" type="button" data-act="another">Record another delivery</button>
+          <button class="btn btn-outline" type="button" data-act="view">View in Deposits</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"
+                aria-hidden="true">
+                <path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor" />
+                <path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6" />
+              </svg></span>Ushirika Grain</a>
+          <p>Grain collection, storage tracking and transparent payouts for farming cooperatives in Trans Nzoia.</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="login.html">Log in</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Get in touch</h4>
+          <ul>
+            <li><a href="mailto:hello@zuriagro.example">hello@zuriagro.example</a></li>
+            <li><a href="tel:+254700000000">+254 700 000 000</a></li>
+            <li>Kitale, Trans Nzoia County, Kenya</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><span>&copy; <span id="year">2026</span> Ushirika Grain. All rights
+          reserved.</span><span>Smart agriculture for a more resilient future.</span></div>
+    </div>
+  </footer>
+  <script src="api.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="shell.js" defer></script>
+  <script src="intake.js" defer></script>
+</body>
+
+</html>

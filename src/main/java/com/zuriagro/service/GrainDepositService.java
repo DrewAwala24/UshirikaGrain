@@ -34,19 +34,22 @@ public class GrainDepositService {
     private final GrainTypeRepository grainTypeRepository;
     private final InventoryService inventoryService;
     private final AuditLogService auditLogService;
+    private final com.zuriagro.repository.FarmerRepository farmerRepository;
 
     public GrainDepositService(GrainDepositRepository grainDepositRepository,
                                UserRepository userRepository,
                                StorageDepotRepository storageDepotRepository,
                                GrainTypeRepository grainTypeRepository,
                                InventoryService inventoryService,
-                               AuditLogService auditLogService) {
+                               AuditLogService auditLogService,
+                               com.zuriagro.repository.FarmerRepository farmerRepository) {
         this.grainDepositRepository = grainDepositRepository;
         this.userRepository = userRepository;
         this.storageDepotRepository = storageDepotRepository;
         this.grainTypeRepository = grainTypeRepository;
         this.inventoryService = inventoryService;
         this.auditLogService = auditLogService;
+        this.farmerRepository = farmerRepository;
     }
 
     @Transactional
@@ -100,8 +103,35 @@ public class GrainDepositService {
         );
         deposit.setStatus(DepositStatus.PENDING);
         deposit.setNotes(request.notes());
+        deposit.setMoisturePercentage(request.moisturePercentage());
+        deposit.setFarmerName(request.farmerName());
+        deposit.setFarmerPhone(request.farmerPhone());
         deposit.setCreatedBy(creator);
         deposit.setDepositedAt(Instant.now());
+
+        com.zuriagro.domain.entity.Farmer farmerRecord = null;
+        if (request.farmerRecordId() != null) {
+            farmerRecord = farmerRepository.findById(request.farmerRecordId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Farmer", "id", request.farmerRecordId()));
+            if (farmerRecord.getStatus() != com.zuriagro.domain.entity.FarmerStatus.ACTIVE) {
+                throw new InvalidOperationException("Cannot record deposit for an inactive farmer: " + farmerRecord.getFullName());
+            }
+        } else if (request.farmerPhone() != null && !request.farmerPhone().isBlank()) {
+            farmerRecord = farmerRepository.findByPhoneNumber(request.farmerPhone().trim()).orElse(null);
+        }
+        if (farmerRecord == null) {
+            farmerRecord = farmerRepository.findByUserId(farmer.getId()).orElse(null);
+        }
+
+        deposit.setFarmerRecord(farmerRecord);
+        if (farmerRecord != null) {
+            if (deposit.getFarmerName() == null || deposit.getFarmerName().isBlank()) {
+                deposit.setFarmerName(farmerRecord.getFullName());
+            }
+            if (deposit.getFarmerPhone() == null || deposit.getFarmerPhone().isBlank()) {
+                deposit.setFarmerPhone(farmerRecord.getPhoneNumber());
+            }
+        }
 
         GrainDeposit saved = grainDepositRepository.save(deposit);
 
@@ -131,8 +161,6 @@ public class GrainDepositService {
     public GrainDepositResponse getDepositByReference(String reference, String authenticatedUsername) {
         GrainDeposit deposit = grainDepositRepository.findByDepositReference(reference)
                 .orElseThrow(() -> new ResourceNotFoundException("GrainDeposit", "reference", reference));
-
-        assertAccessAllowed(deposit, authenticatedUsername);
 
         return GrainDepositResponse.fromEntity(deposit);
     }

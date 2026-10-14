@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin & Depot Management · Ushirika Grain</title>
+<meta name="description" content="Manage pending grain deposits, audit inventory balances, and process stock adjustments.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-in">
+    <a class="brand" href="index.html" aria-label="Ushirika Grain home"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="nav-sep" aria-hidden="true"></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="intake.html">Intake</a></li>
+          <li><a href="deposits.html">Deposits</a></li>
+          <li><a href="admin.html" aria-current="page">Admin</a></li>
+      </ul>
+      <div class="auth-slot" id="auth-slot"><a class="btn btn-primary btn-sm" href="login.html">Log in</a></div>
+    </nav>
+  </div>
+</header>
+<main id="main" data-page="admin" data-protected class="container app-main">
+  <div class="app-head">
+    <div>
+      <span class="eyebrow" style="color:var(--gold,#C48F29)">Operations Portal</span>
+      <h1>Admin & Depot Management</h1>
+      <p id="admin-subtitle">Review incoming deposits, monitor silo inventory balances, and log physical adjustments.</p>
+    </div>
+  </div>
+
+  <div id="admin-access-denied" class="notice s-crit" style="display:none;margin-bottom:24px">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+    <span><strong>Access Restricted:</strong> This section requires System Administrator or Depot Manager credentials.</span>
+  </div>
+
+  <div id="admin-content">
+    <!-- Section 1: Pending Approvals Queue -->
+    <section class="section" style="padding-top:0">
+      <div class="row-between" style="margin-bottom:12px">
+        <div>
+          <h2>Pending Deposit Approvals</h2>
+          <p class="muted">Deposits awaiting physical gate verification, moisture clearance, and stock addition.</p>
+        </div>
+        <span class="pill s-warn mono" id="pending-count">0 pending</span>
+      </div>
+      <div class="form-card" style="padding:0;overflow:hidden">
+        <div class="scroll" id="pending-table-wrap">
+          <table id="pending-table">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Farmer</th>
+                <th>Depot</th>
+                <th>Grain</th>
+                <th class="r">Quantity</th>
+                <th class="r">Moisture</th>
+                <th>Risk</th>
+                <th>Date</th>
+                <th style="text-align:center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="pending-tbody">
+              <tr><td colspan="9" class="empty" style="padding:24px;text-align:center">Loading pending deposits…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Real-time Depot Inventory Balances -->
+    <section class="section" style="padding-top:24px">
+      <div class="row-between" style="margin-bottom:12px">
+        <div>
+          <h2>Depot Inventory Balances</h2>
+          <p class="muted">Real-time stock on hand recorded in the immutable inventory ledger.</p>
+        </div>
+        <button class="btn btn-outline btn-sm" id="btn-refresh-balances" type="button">Refresh balances</button>
+      </div>
+      <div class="form-card" style="padding:0;overflow:hidden">
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Depot</th>
+                <th>Grain Type</th>
+                <th class="r">Stock (KG)</th>
+                <th class="r">Stock (Bags)</th>
+                <th class="r">Depot Capacity</th>
+                <th class="r">Utilization</th>
+                <th>Last Updated</th>
+              </tr>
+            </thead>
+            <tbody id="balances-tbody">
+              <tr><td colspan="7" class="empty" style="padding:24px;text-align:center">Loading balances…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Stock Adjustment Form -->
+    <section class="section" style="padding-top:24px">
+      <div class="grid-form">
+        <form id="adjustment-form" class="form-card" novalidate>
+          <h2 class="form-title"><span class="n">!</span>Privileged Stock Adjustment <small>Audit or dispatch</small></h2>
+          <p class="muted" style="margin-bottom:18px">Record physical audit variances, dispatch to millers, or moisture loss. All adjustments are cryptographically signed and logged.</p>
+          
+          <div class="field" data-field="depot">
+            <label for="adj-depot">Depot<span class="req" aria-hidden="true">*</span></label>
+            <div class="select"><select class="control" id="adj-depot" required></select></div>
+            <span class="field-err" role="alert"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="field" data-field="grain">
+              <label for="adj-grain">Grain Type<span class="req" aria-hidden="true">*</span></label>
+              <div class="select"><select class="control" id="adj-grain" required></select></div>
+              <span class="field-err" role="alert"></span>
+            </div>
+            <div class="field" data-field="type">
+              <label for="adj-type">Adjustment Action<span class="req" aria-hidden="true">*</span></label>
+              <div class="select">
+                <select class="control" id="adj-type" required>
+                  <option value="ADJUSTMENT_ADD">Add to Stock (Surplus / Reclassification)</option>
+                  <option value="ADJUSTMENT_SUBTRACT">Subtract from Stock (Dispatch / Spoilage / Loss)</option>
+                </select>
+              </div>
+              <span class="field-err" role="alert"></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field" data-field="quantity">
+              <label for="adj-qty">Quantity (KG)<span class="req" aria-hidden="true">*</span></label>
+              <div class="inp"><input class="control" id="adj-qty" type="number" min="1" step="0.01" placeholder="e.g. 4500" required><span class="suffix">KG</span></div>
+              <span class="field-err" role="alert"></span>
+              <span class="hint mono" id="adj-bags-hint">Each bag is 90 kg</span>
+            </div>
+            <div class="field" data-field="ref">
+              <label for="adj-ref">Reference Number</label>
+              <input class="control mono" id="adj-ref" placeholder="e.g. AUD-2026-001 or WAYBILL-99">
+              <span class="hint">Optional internal document reference.</span>
+            </div>
+          </div>
+
+          <div class="field" data-field="reason">
+            <label for="adj-reason">Mandatory Reason / Notes<span class="req" aria-hidden="true">*</span></label>
+            <input class="control" id="adj-reason" placeholder="Detailed reason for inventory ledger audit" required>
+            <span class="field-err" role="alert"></span>
+          </div>
+
+          <div id="adj-error" class="alert-box" role="alert"></div>
+
+          <div class="form-foot">
+            <span class="fine">Adjustment creates an immutable stock movement record linked to your admin ID.</span>
+            <button class="btn btn-primary" id="adj-btn" type="submit">Submit Stock Adjustment</button>
+          </div>
+        </form>
+
+        <aside class="panel">
+          <div class="panel-h"><h2>Ledger Guidelines</h2><p>Compliance and integrity</p></div>
+          <div class="panel-b stack" style="gap:16px">
+            <div>
+              <strong>Accepting Deposits</strong>
+              <p class="muted" style="font-size:14px;margin-top:4px">Automatically locks inventory row, increases depot balance, and logs signed audit trail.</p>
+            </div>
+            <div>
+              <strong>Rejecting Deposits</strong>
+              <p class="muted" style="font-size:14px;margin-top:4px">Mandatory reason is recorded. Deposit status changes to REJECTED without modifying depot balance.</p>
+            </div>
+            <div>
+              <strong>Dispatch & Adjustments</strong>
+              <p class="muted" style="font-size:14px;margin-top:4px">Physical stock cannot fall below zero. Subtractions will fail validation if available depot stock is insufficient.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+        <p>Grain collection, storage tracking and transparent payouts for farming cooperatives in Trans Nzoia.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Log in</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          <li><a href="mailto:hello@zuriagro.example">hello@zuriagro.example</a></li>
+          <li><a href="tel:+254700000000">+254 700 000 000</a></li>
+          <li>Kitale, Trans Nzoia County, Kenya</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>&copy; <span id="year">2026</span> Ushirika Grain. All rights reserved.</span><span>Smart agriculture for a more resilient future.</span></div>
+  </div>
+</footer>
+<script src="api.js" defer></script>
+<script src="data.js" defer></script>
+<script src="shell.js" defer></script>
+<script src="admin.js" defer></script>
+</body>
+</html>

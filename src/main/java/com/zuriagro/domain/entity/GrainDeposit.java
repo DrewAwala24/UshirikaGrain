@@ -49,6 +49,19 @@ public class GrainDeposit {
     @Column(name = "notes", length = 1000)
     private String notes;
 
+    @Column(name = "moisture_percentage", precision = 5, scale = 2)
+    private java.math.BigDecimal moisturePercentage;
+
+    @Column(name = "farmer_name", length = 150)
+    private String farmerName;
+
+    @Column(name = "farmer_phone", length = 30)
+    private String farmerPhone;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farmer_record_id")
+    private Farmer farmerRecord;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by_user_id", nullable = false)
     private User createdBy;
@@ -157,6 +170,30 @@ public class GrainDeposit {
         this.notes = notes;
     }
 
+    public java.math.BigDecimal getMoisturePercentage() {
+        return moisturePercentage;
+    }
+
+    public void setMoisturePercentage(java.math.BigDecimal moisturePercentage) {
+        this.moisturePercentage = moisturePercentage;
+    }
+
+    public String getFarmerName() {
+        return farmerName;
+    }
+
+    public void setFarmerName(String farmerName) {
+        this.farmerName = farmerName;
+    }
+
+    public String getFarmerPhone() {
+        return farmerPhone;
+    }
+
+    public void setFarmerPhone(String farmerPhone) {
+        this.farmerPhone = farmerPhone;
+    }
+
     public User getCreatedBy() {
         return createdBy;
     }
@@ -203,6 +240,14 @@ public class GrainDeposit {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Farmer getFarmerRecord() {
+        return farmerRecord;
+    }
+
+    public void setFarmerRecord(Farmer farmerRecord) {
+        this.farmerRecord = farmerRecord;
     }
 
     public Instant getUpdatedAt() {

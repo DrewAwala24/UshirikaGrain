@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deposits</title>
+<meta name="description" content="Receipt lookup, the deposit ledger and the integrity check.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-in">
+    <a class="brand" href="index.html" aria-label="Ushirika Grain home"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li class="nav-sep" aria-hidden="true"></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="intake.html">Intake</a></li>
+          <li><a href="deposits.html" aria-current="page">Deposits</a></li>
+      </ul>
+      <div class="auth-slot" id="auth-slot"><a class="btn btn-primary btn-sm" href="login.html">Log in</a></div>
+    </nav>
+  </div>
+</header>
+<main id="main" data-page="deposits" data-protected class="container app-main">
+  <div class="app-head">
+    <div>
+      <h1>Deposits</h1>
+      <p>Every delivery has a tracking ID and is signed against the record before it. Look up a receipt, search the ledger, or check that nothing has been changed.</p>
+    </div>
+    <div class="actions">
+      <a class="btn btn-primary" href="intake.html">New intake</a>
+      <button class="btn btn-outline" type="button" data-act="reset">Restore sample data</button>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="grid-lookup">
+      <div class="panel" id="lookup-panel">
+        <div class="panel-h"><h2>Receipt lookup</h2><p>Enter a tracking ID</p></div>
+        <form class="look" id="lookup-form" novalidate>
+          <div class="field" id="lookup-field">
+            <label for="lookup-id">Tracking ID</label>
+            <input class="control" id="lookup-id" autocomplete="off" spellcheck="false" placeholder="ZA-KTL-261014-0041">
+            <span class="field-err" id="lookup-err" role="alert"></span>
+          </div>
+          <button class="btn btn-primary" type="submit">Look up</button>
+        </form>
+        <div id="receipt" aria-live="polite"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h"><h2>Ledger integrity</h2><p>Tamper-evident audit trail</p></div>
+        <div class="panel-b"><p class="muted">Each record stores a signature of its own details plus the signature of the record before it. Changing any past deposit breaks the chain. Try it: simulate an edit, then verify.</p></div>
+        <div class="integrity">
+          <button class="btn btn-primary btn-sm" type="button" data-act="verify">Verify ledger</button>
+          <button class="btn btn-outline btn-sm" type="button" data-act="tamper" id="tamper-btn">Simulate an edit</button>
+          <div class="msg" id="verify-msg" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h"><h2>All deposits</h2><p id="ledger-count"></p></div>
+      <div class="tools">
+        <input class="control" id="q" type="search" placeholder="Search by ID, farmer or depot" autocomplete="off" aria-label="Search deposits">
+        <div class="select"><select class="control" id="fd" aria-label="Filter by depot"></select></div>
+        <div class="select"><select class="control" id="fr" aria-label="Filter by spoilage risk">
+          <option value="">All risk levels</option>
+          <option value="high">High risk</option>
+          <option value="med">Medium risk</option>
+          <option value="low">Low risk</option>
+        </select></div>
+      </div>
+      <div class="scroll" id="ledger"></div>
+    </div>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5a8 8 0 0 1 16 0V21H4z" fill="currentColor"/><path d="M4 13h16M4 17h16" stroke="#0F3325" stroke-width="1.6"/></svg></span>Ushirika Grain</a>
+        <p>Grain collection, storage tracking and transparent payouts for farming cooperatives in Trans Nzoia.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Log in</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          <li><a href="mailto:hello@zuriagro.example">hello@zuriagro.example</a></li>
+          <li><a href="tel:+254700000000">+254 700 000 000</a></li>
+          <li>Kitale, Trans Nzoia County, Kenya</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>&copy; <span id="year">2026</span> Ushirika Grain. All rights reserved.</span><span>Smart agriculture for a more resilient future.</span></div>
+  </div>
+</footer>
+<script src="api.js" defer></script>
+<script src="data.js" defer></script>
+<script src="shell.js" defer></script>
+<script src="deposits.js" defer></script>
+</body>
+</html>

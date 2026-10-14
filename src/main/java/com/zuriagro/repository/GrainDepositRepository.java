@@ -26,4 +26,6 @@ public interface GrainDepositRepository extends JpaRepository<GrainDeposit, Long
     Page<GrainDeposit> findByFarmerIdAndStatus(Long farmerId, DepositStatus status, Pageable pageable);
 
     long countByStatus(DepositStatus status);
+
+    long countByCreatedAtAfter(java.time.Instant createdAt);
 }
