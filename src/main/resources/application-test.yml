@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: ushirikagrain-backend-test
+  datasource:
+    url: jdbc:h2:mem:zuriagro_test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  flyway:
+    enabled: false
+
+app:
+  jwt:
+    secret: 9a7f3c4e2b8d1a5f6083e9b2d4c7a1f5e8b0d3c6a9f2e5b8c1d4a7f0e3b6d9c2
+    expiration-ms: 3600000
+  cors:
+    allowed-origins: http://localhost:3000
